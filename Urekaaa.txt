@@ -1,0 +1,218 @@
+ dateval;
+  get dateValue(){
+    if(this.dateval == undefined)
+    {
+      this.dateval = new Date().toISOString().substring(0, 10);
+    }
+    return this.dateval;
+  }
+  changedate(event){
+    this.dateval = event.target.value;
+  }
+
+
+New Project 
+
+HTML
+----------
+
+<template>
+    <lightning-card >
+        <div style="background-color: rgb(53, 51, 65);">
+            <div style="display: inline-block; padding-left:7%; margin-top: 5px; margin-bottom:5px;">
+                <i style="font-size: 30px;color:white">CloudServeillance</i> <br/> <span style="padding-left:8%;color:white">we make your work better</span>
+            </div>
+            <div style="float:right;padding-right:3%;padding-top:2%">
+                <input type="search" id="gsearch" placeholder="Search.." size="40%">&ensp;
+                <lightning-icon icon-name="utility:user" size="small"     variant="bare" alternative-text="User" ></lightning-icon>
+            </div>
+        </div>
+    <div style="clear: both;">
+        Record number
+        <lightning-progress-indicator class="custom-css" type="base" current-step={selectedstage} has-error="" variant="base">
+            <lightning-progress-step label="Step 1" value="1"></lightning-progress-step>
+            <lightning-progress-step label="Step 2" value="2"></lightning-progress-step>
+            <lightning-progress-step label="Step 3" value="3"></lightning-progress-step>
+            <lightning-progress-step label="Step 4" value="4"></lightning-progress-step>
+            <lightning-progress-step label="Step 5" value="5"></lightning-progress-step>
+            <lightning-progress-step label="Step 6" value="6"></lightning-progress-step>
+            <lightning-progress-step label="Step 7" value="7"></lightning-progress-step>
+            <lightning-progress-step label="Step 8" value="8"></lightning-progress-step>
+        </lightning-progress-indicator>
+        <br/>
+        <div class="sss">
+            <button type="button" class="proj" onclick={tapme1} data-id="mining">Mining</button> &emsp;   &emsp;   &emsp;  
+            <button type="button" class="proj" onclick={tapme2} data-id="crushers">Crushers</button>  &emsp;   &emsp;   &emsp;  
+            <button type="button" class="proj" onclick={tapme3} data-id="rawMill">Raw Mill</button>  &emsp;   &emsp;   &emsp;  
+            <button type="button" class="proj" onclick={tapme4} data-id="rawmix">Raw Mix</button>  
+        </div>
+        <br/>
+        <div class="sss">
+            <button type="button" class="proj" onclick={tapme5} data-id="rotarykiln">Rotary Kiln</button> &emsp;   &emsp;   &emsp;   
+            <button type="button" class="proj" onclick={tapme6} data-id="coolprocess">Cool Process</button> &emsp;   &emsp;  &emsp;     
+            <button type="button" class="proj" onclick={tapme7} data-id="transportation">Transportation</button> &emsp;   &emsp;  &emsp;      
+            <button type="button" class="proj" onclick={tapme8} data-id="sales">Sales</button>  
+        </div>
+    
+        <br/>
+        <div>
+            <div class="slds-form-element buttons slds-text-align_center">
+                <button class="slds-button slds-button_outline-brand buttonn">Previous</button>&emsp;  
+                <button class="slds-button slds-button_destructive buttonn">Next</button>  
+            </div>
+        </div>
+    </div>
+</lightning-card>
+</template>
+--------------------------
+JS
+
+import { LightningElement } from 'lwc';
+
+export default class Newproject extends LightningElement 
+{
+    selectedstage
+    stages=[];
+  
+    tapme1() 
+    {
+        if( !this.stages.includes('mining') ){
+          this.selectedstage="1"   
+            this.stages.push('mining');    
+             this.template.querySelector('[data-id="mining"]').className='beforebutton';   
+                 }
+    }
+    tapme2()
+    {
+        if(this.stages.includes('mining') && !this.stages.includes('crushers') ){
+            this.selectedstage="2"
+            this.template.querySelector('[data-id="mining"]').className='afterbutton';
+            this.template.querySelector('[data-id="crushers"]').className='beforebutton';
+                this.stages.push('crushers');
+                 }
+      
+    }
+    tapme3()
+    { 
+        if(this.stages.includes('crushers') && !this.stages.includes('RawMill')){
+            this.selectedstage="3"  
+             this.template.querySelector('[data-id="crushers"]').className='afterbutton';   
+            this.template.querySelector('[data-id="rawMill"]').className='beforebutton';
+            this.stages.push('rawMill');
+          }
+    }
+    tapme4()
+    {
+        if(this.stages.includes('rawMill') && !this.stages.includes('rawmix')){
+            this.selectedstage="4"  
+               this.template.querySelector('[data-id="rawMill"]').className='afterbutton';   
+             this.template.querySelector('[data-id="rawmix"]').className='beforebutton';
+                   this.stages.push('rawmix');
+               }
+    }
+    tapme5()
+    {
+        if(this.stages.includes('rawmix') && !this.stages.includes('rotarykiln')){
+            this.selectedstage="5"  
+          this.template.querySelector('[data-id="rawmix"]').className='afterbutton';   
+        this.template.querySelector('[data-id="rotarykiln"]').className='beforebutton'; 
+                this.stages.push('rotarykiln');                
+              }
+    }
+    tapme6()
+    {
+        if(this.stages.includes('rotarykiln') && !this.stages.includes('coolprocess')){
+            this.selectedstage="6"  
+         this.template.querySelector('[data-id="rotarykiln"]').className='afterbutton'; 
+                this.template.querySelector('[data-id="coolprocess"]').className='beforebutton';     
+                this.stages.push('Coolprocess');                      
+                }
+    }
+    tapme7()
+    {
+        if(this.stages.includes('rotarykiln') && !this.stages.includes('Transportation')){
+            this.selectedstage="7"
+              this.template.querySelector('[data-id="coolprocess"]').className='afterbutton'; 
+        this.template.querySelector('[data-id="transportation"]').className='beforebutton';  
+                this.stages.push('transportation');                          
+                }
+    }
+    tapme8()
+    {
+        if(this.stages.includes('transportation') && !this.stages.includes('sales')){
+            this.selectedstage="8"
+        this.template.querySelector('[data-id="transportation"]').className='afterbutton';
+            this.template.querySelector('[data-id="sales"]').className='beforebutton';
+            this.stages.push('sales');    
+     }
+    }
+    clickme(event)
+    {
+       
+    }
+}
+----------------------------
+CSS
+
+.custom-css {
+  --lwc-progressBarColorBackgroundFill: rgb(240, 41, 41);
+  --lwc-progressBarcolorBackgroundIndicatorDot: green;
+}
+
+.pro
+{
+  background-color:darkblue;
+   color:white;
+   font-size: medium;
+}
+
+.sss
+{
+    padding-left:300px;
+    gap: 10px;
+}
+.proj
+{
+  width:150px;
+  height:100px;
+  border-radius: 10px;
+  border-color:red;
+}
+.search
+{
+    width: 200px;
+    float:right;
+}
+.buttonn
+{
+    width:100px;
+    height:50px;
+}
+.button {
+background-color: rgb(190, 190, 190);
+ border-color: rgba(211, 5, 5, 0.911);
+ height: 100px;
+ width: 150px;
+ border-radius: 10px;
+ gap: 5px;
+ }
+.afterbutton{
+ background-color: rgb(211, 248, 163);
+ border-color: rgba(1, 116, 1, 0.911);
+ height: 100px;
+ width: 150px;
+ border-radius: 10px;
+gap: 5px;
+
+}
+
+ .beforebutton{
+
+ background-color: rgb(240, 27, 27);
+border-color: rgba(136, 1, 1, 0.911);
+height: 100px;
+width: 150px;
+border-radius: 10px;
+gap: 5px;
+ }
+

@@ -1,0 +1,786 @@
+                           opportunity_tracking_create(page)
+.....................................................................................................................
+.....................................................................................................................
+opportunity_tracking_create.html:
+---------------------------------
+
+<template>
+    <div class="slds-text-heading_large" style="padding: 15px 50px 30px 10px;">
+        Opportunity Tracking (create)
+    </div>
+    <lightning-card >
+        <div class="head" style="padding: 1em;background:#02398d">
+            <div class="slds-text-color_inverse" style="font-size:medium;" >Customer Info</div>
+        </div>
+        <lightning-layout size="12" class="wrapper">
+                <lightning-input type="text" label="customer Name" required="true" onchange={callcus}></lightning-input>
+                <template if:true={showpicklist}>
+                    <lightning-combobox label="Sales Region"
+                                        options={controllingPicklist} 
+                                        value={selectedControlling}
+                                        onchange={fetchDependentValue}
+                                        >
+                    </lightning-combobox>
+                    </template>
+                    <template if:true={showdependent}>
+                    <lightning-combobox label="Sub Sales Region"
+                                        options={finalDependentVal} 
+                                        value={selectedControlling}
+                                        disabled={dependentDisabled}
+                                        onchange={handleDependentPicklist}                                    
+                                        >
+                    </lightning-combobox>
+                </template>
+                <lightning-input type="text" label="BD Contact" onchange={BDContact}></lightning-input>
+            <lightning-input type="text" label="Opportunity Info" onchange={OpportunityInfo}></lightning-input>
+            <lightning-input type="Date" label="Opportunity Start" onchange={OpportunityStart}></lightning-input>
+            <lightning-input type="text" label="Comments" onchange={Comments}></lightning-input>
+            <template if:true={Sourcepicklist.data}>
+                <lightning-combobox label="Source"
+                                    required="true"
+                                    options={Sourcepicklist.data.values}
+                                    onchange={Src}></lightning-combobox>
+                                    
+            </template>       
+             <lightning-input type="text" label="Sales Contact" onchange={SalesContact}></lightning-input>
+    
+</lightning-layout> 
+</lightning-card>
+<lightning-card>
+<div class="head" style="padding: 1em;background:#02398d">
+    <div class="slds-text-color_inverse" style="font-size:medium;" >Opportunity Info</div>
+</div>
+<lightning-layout size="12" >
+    <lightning-layout-item size="4" padding="around-small">
+        <template if:true={OpportunityTypepicklist.data}>
+            <lightning-combobox label="Opportunity Type"
+                                options={OpportunityTypepicklist.data.values}
+                                onchange={OppType}></lightning-combobox>
+                                
+        </template>        
+         <lightning-input type="text" label="Estimated Value(PoC)" onchange={EstimateValue}></lightning-input>
+        <lightning-input type="text" label="ForeCast" onchange={Forecast}></lightning-input>
+        <template if:true={BHQpicklist.data}>
+            <lightning-combobox label="BHQ"
+                                options={BHQpicklist.data.values}
+                                onchange={bhqpic}></lightning-combobox>
+
+        </template>
+    </lightning-layout-item>
+    <lightning-layout-item size="4" padding="around-small">
+        <template if:true={SalesStatuspicklist.data}>
+            <lightning-combobox label="Sales Status"
+                                required="true"
+                                options={SalesStatuspicklist.data.values}
+                                onchange={Salests}></lightning-combobox>
+                                
+        </template>            
+        <lightning-input type="text" label="Rough Business Volume" onchange={Roughbusvol}></lightning-input>
+        <template if:true={Chancepicklist.data}>
+            <lightning-combobox label="Chance"
+                                options={Chancepicklist.data.values}
+                                onchange={Cha}></lightning-combobox>
+
+        </template>    
+        <lightning-input type="text" label="DXP Proposal Ref Number" onchange={Dxp}></lightning-input>
+
+</lightning-layout-item>
+<lightning-layout-item size="4" padding="around-small">
+    <template if:true={CurrencyTypepicklist.data}>
+        <lightning-combobox label="Currency Type"
+                            options={CurrencyTypepicklist.data.values}
+                            onchange={CurType}></lightning-combobox>
+                            
+    </template>        
+    <lightning-input type="text" label="SaaS Revenue(USD)" onchange={SaasRev}></lightning-input>
+<lightning-input type="text" label="OneSMS OpportunityID" onchange={OnesmsOPP}></lightning-input>
+<template if:true={stagepicklist.data}>
+    <lightning-combobox label="Stage"
+                        options={stagepicklist.data.values}
+                        onchange={stawon}></lightning-combobox>
+                        
+</template> 
+
+</lightning-layout-item>
+</lightning-layout>
+</lightning-card>
+<lightning-card>
+<div class="head" style="padding: 1em;background:#02398d">
+    <div class="slds-text-color_inverse" style="font-size:medium;" >App Registration</div>
+</div>
+<lightning-layout size="12">
+    <lightning-layout-item size="12" padding="around-small">
+        <template if:true={hostingpicklist.data}>
+            <lightning-combobox label="Hosting"
+            value={value}
+                                options={hostingpicklist.data.values}
+                                onchange={Host}></lightning-combobox>
+
+        </template>
+        <div>
+            <c-optchange onapptechinfo={childevent}></c-optchange>
+            <lightning-button-icon icon-name="utility:add" class="slds-float_right" variant="brand" onclick={clickme}></lightning-button-icon>
+        </div>
+        <template if:true={child1}>
+            <c-optchange onapptechinfo={childevent}></c-optchange>
+            <lightning-button-icon icon-name="utility:delete" class="slds-float_right"  onclick={clickme1}></lightning-button-icon>
+            
+        </template>
+        <template if:true={child2}>
+            <c-optchange onapptechinfo={childevent}></c-optchange>
+            <lightning-button-icon icon-name="utility:delete" class="slds-float_right"  onclick={clickme2}></lightning-button-icon>
+        </template>
+        <template if:true={child3}>
+            <c-optchange onapptechinfo={childevent}></c-optchange>
+            <lightning-button-icon icon-name="utility:delete" class="slds-float_right"  onclick={clickme3}></lightning-button-icon>
+        </template>
+        <template if:true={child4}>
+            <c-optchange onapptechinfo={childevent}></c-optchange>
+            <lightning-button-icon icon-name="utility:delete" class="slds-float_right"  onclick={clickme4}></lightning-button-icon>
+        </template>
+        <template if:true={child5}>
+            <c-optchange onapptechinfo={childevent}></c-optchange>
+            <lightning-button-icon icon-name="utility:delete" class="slds-float_right"  onclick={clickme5}></lightning-button-icon>
+        </template>
+         <!--  <template if:true={appPicklist.data}>
+            <lightning-combobox label="App"
+                                 value={values}
+                                 options={appPicklist.data.values}
+                                 placeholder="Select App"
+                                 onchange={callApp}></lightning-combobox>
+             </template> -->
+   </lightning-layout-item>
+</lightning-layout>
+</lightning-card>
+    <lightning-card>
+        <div class="head" style="padding: 1em;background:#02398d">
+            <div class="slds-text-color_inverse" style="font-size:medium;" >Upload Document</div>
+        </div>
+<lightning-layout size="12">
+<lightning-layout-item size="2" padding="around-small">
+<lightning-input type="file" accept=".xlsc,.xls,.csv,.png,.doc,.docx,.jpg,.pdf" label="Attachment" onchange={openfileupload}></lightning-input>
+</lightning-layout-item>
+</lightning-layout >
+<!-- <lightning-button variant=”Neutral” label="Upload" title="Upload" onclick={handleclick} class="slds-m-left_x-small"></lightning-button> -->
+    </lightning-card>
+<div  align="right" >
+<lightning-button  variant="brand"   label="Save" onclick={callme}></lightning-button>
+<lightning-button variant="destructive"  class="slds-m-top_small slds-m-horizontal_small" label="Cancel" onclick={resetFormAction}></lightning-button>                
+<template if:true={wonbutton}>
+<lightning-button label="won" variant="Success"  onclick={callwon}></lightning-button>
+</template>
+<template if:true={Holdbutton}>
+    <lightning-button label="Hold" variant="Success"  onclick={callHold}></lightning-button>
+    </template>
+</div>
+
+</template>
+
+
+opportunity_tracking_create.js:
+...............................
+
+import { LightningElement,track,wire,api} from 'lwc';
+import { createRecord } from 'lightning/uiRecordApi';
+import { getPicklistValues } from 'lightning/uiObjectInfoApi';
+import { getPicklistValuesByRecordType } from 'lightning/uiObjectInfoApi';
+import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+ import opp from '@salesforce/schema/Opportunity_Tracking__c';
+ import source_Field from '@salesforce/schema/Opportunity_Tracking__c.Source__c';
+ import Sales_Region_Field from '@salesforce/schema/Opportunity_Tracking__c.Sales_Region__c';
+ import Opportunity_Type_Field from '@salesforce/schema/Opportunity_Tracking__c.Opportunity_Type__c';
+ import Sales_Status_Field from '@salesforce/schema/Opportunity_Tracking__c.Sales_Status__c';
+ import Currency_Type_Field from '@salesforce/schema/Opportunity_Tracking__c.Currency_Type__c';
+ import BHQ_Field from '@salesforce/schema/Opportunity_Tracking__c.BHQ__c';
+ import Chance_Field from '@salesforce/schema/Opportunity_Tracking__c.Chance__c';
+ import stage_Field  from '@salesforce/schema/Opportunity_Tracking__c.Stage__c';
+ import Hosting_Field from '@salesforce/schema/Opportunity_Tracking__c.Hosting__c';
+ import App_Field from '@salesforce/schema/Opportunity_Tracking__c.App__c';
+ //import opptrac_orderreg from '@salesforce/apex/opptrac_orderreg.opptrac_orderreg';
+ import uploadFile from '@salesforce/apex/FileUploaderClass.uploadFile'
+//import { api } from 'lwc';
+export default class opportunity_tracking_create extends LightningElement 
+//checking
+
+// import opp from '@salesforce/schema/Order_Registration__c';
+// import source_Field from '@salesforce/schema/Order_Registration__c.Source__c';
+// import Sales_Region_Field from '@salesforce/schema/Order_Registration__c.Sales_Region__c';
+// import Opportunity_Type_Field from '@salesforce/schema/Order_Registration__c.Opportunity_Type__c';
+// import Sales_Status_Field from '@salesforce/schema/Order_Registration__c.Sales_Status__c';
+// import Currency_Type_Field from '@salesforce/schema/Order_Registration__c.Currency_Type__c';
+// import BHQ_Field from '@salesforce/schema/Order_Registration__c.BHQ__c';
+// import Chance_Field from '@salesforce/schema/Opportunity_Tracking__c.Chance__c';
+// import stage_Field  from '@salesforce/schema/Order_Registration__c.Stage__c';
+// import Hosting_Field from '@salesforce/schema/Order_Registration__c.Hosting__c';
+// import App_Field from '@salesforce/schema/Order_Registration__c.App__c';
+// import uploadFile from '@salesforce/apex/FileUploaderClass.uploadFile'
+// export default class Order_Registration__c extends LightningElement 
+
+//checking
+
+{
+    @wire(getObjectInfo,{objectApiName:'Opportunity_Tracking__c'})
+    object;
+    @track customer;
+    @track OpptyInfo;
+    @track Source;
+    @track selectedVal;
+    @track SalesRegion;
+    @track OpptyStart;
+    @track SalesCon;
+    @track BDCon;
+    @track Commts;
+    @track Chance;
+    @track opty;
+    @track salessts;
+    @track curty;
+    @track bhq;
+    @track hos;
+    @track appln;
+    @api recordId;
+    recordData;
+    @track child1=false;
+    @track child2=false;
+    @track child3=false;
+    @track child4=false;
+    @track child5=false;
+    callcus(event)
+    {
+        this.customer = event.target.value;
+    }
+    OpportunityInfo(event)
+    {
+        this.OpptyInfo = event.target.value;
+    }
+    @wire(getPicklistValues,{recordTypeId:'$object.data.defaultRecordTypeId',fieldApiName:source_Field})
+    Sourcepicklist;
+    Src(event)
+    {
+        this.Sour = event.detail.value;
+    }
+    @track controllerValue;
+    @track dependentValue;
+ 
+    controllingPicklist=[];
+    dependentPicklist;
+    @track finalDependentVal=[];
+    @track selectedControlling="--None--";
+  
+    showpicklist = false;
+    dependentDisabled=true;
+    showdependent = false;
+    @wire(getPicklistValuesByRecordType, { objectApiName: 'Opportunity_Tracking__c', recordTypeId: '$object.data.defaultRecordTypeId' })
+    fetchPicklist({error,data}){
+         
+        if(data && data.picklistFieldValues){
+            let optionsValue = {}
+            optionsValue["label"] = "--None--";
+            optionsValue["value"] = "";
+            this.controllingPicklist.push(optionsValue);
+            data.picklistFieldValues['Sales_Region__c'].values.forEach(optionData => {
+                this.controllingPicklist.push({label : optionData.label, value : optionData.value});
+            });
+ 
+            this.dependentPicklist = data.picklistFieldValues['Sub_Sales_Region__c'];
+            this.showpicklist = true;
+        } 
+    }
+ dependentDisabled=true;
+    fetchDependentValue(event){
+        console.log(event.target.value);
+        this.finalDependentVal=[];
+        this.showdependent = false;
+        this.SalesRegion = event.target.value;
+        this.controllerValue =this.SalesRegion;
+        this.finalDependentVal.push({label : "--None--", value : ""})
+        let controllerValues = this.dependentPicklist.controllerValues;
+        this.dependentPicklist.values.forEach(depVal => {
+            depVal.validFor.forEach(depKey =>{
+                if(depKey === controllerValues[this.SalesRegion]){
+                    this.dependentDisabled = false;
+                    this.showdependent = true;
+                    this.finalDependentVal.push({label : depVal.label, value : depVal.value});
+                }
+            });
+              
+        });
+    }
+ 
+    handleDependentPicklist(event){
+        this.dependentValue = event.target.value;
+    }
+   // @wire(getPicklistValues,{recordTypeId:'$object.data.defaultRecordTypeId',fieldApiName:Sales_Region_Field})
+    //regionpicklist;
+   // Sales(event)
+   // {
+   //     this.SalesRegion = event.detail.value;
+  //  }
+    OpportunityStart(event)
+    {
+        this.OpptyStart = event.target.value;
+    }
+    SalesContact(event)
+    {
+        this.SalesCon = event.target.value;
+    }
+    BDContact(event)
+    {
+        this.BDCon = event.target.value;
+    }
+    Comments(event)
+    {
+        this.Commts = event.target.value;
+    }
+    @wire(getPicklistValues,{recordTypeId:'$object.data.defaultRecordTypeId',fieldApiName:Opportunity_Type_Field})
+    OpportunityTypepicklist;
+    OppType(event)
+    {
+        this.opty = event.detail.value;
+    }
+    EstimateValue(event)
+    {
+        this.EstimateValue = event.target.value;
+    }
+    Forecast(event)
+    {
+        this.Forecast = event.target.value;
+    }
+    @wire(getPicklistValues,{recordTypeId:'$object.data.defaultRecordTypeId',fieldApiName:BHQ_Field})
+    BHQpicklist;
+    bhqpic(event)
+    {
+        this.bhq = event.detail.value;
+    }
+    @wire(getPicklistValues,{recordTypeId:'$object.data.defaultRecordTypeId',fieldApiName:Sales_Status_Field})
+    SalesStatuspicklist;
+    Salests(event)
+    {
+        this.salessts = event.detail.value;
+    }
+    Roughbusvol(event)
+    {
+        this.Roughbusvol = event.target.value;
+    }
+    @wire(getPicklistValues,{recordTypeId:'$object.data.defaultRecordTypeId',fieldApiName:Chance_Field})
+    Chancepicklist;
+    Cha(event)
+    {
+        this.Chance = event.detail.value;
+    }
+    Dxp(event)
+    {
+        this.Dxp = event.target.value;
+    }
+    @wire(getPicklistValues,{recordTypeId:'$object.data.defaultRecordTypeId',fieldApiName:Currency_Type_Field})
+    CurrencyTypepicklist;
+    CurType(event)
+    {
+        this.curty = event.detail.value;
+    }
+    SaasRev(event)
+    {
+        this.SaasRev = event.target.value;
+    }
+    OnesmsOPP(event)
+    {
+        this.OnesmsOPP = event.target.value;
+    }
+    @track stage
+    @wire(getPicklistValues,{recordTypeId:'$object.data.defaultRecordTypeId',fieldApiName:stage_Field})
+    stagepicklist;
+    stawon(event)
+    {
+        this.stage = event.detail.value;
+        if(this.stage=='Won')
+        {
+            this.wonbutton=true;
+        }
+         else{
+          this.wonbutton=false;   
+         }
+       if(this.stage=='Hold')
+        {
+            this.Holdbutton=true;
+        }
+        else {
+            this.Holdbutton=false;   
+        }
+        // else{
+               
+        //     this.Holdbutton=false;   
+        // }
+    }
+    @wire(getPicklistValues,{recordTypeId:'$object.data.defaultRecordTypeId',fieldApiName:Hosting_Field})
+    hostingpicklist;
+    Host(event)
+    {
+        this.hos = event.detail.value;
+    }
+    // @wire(getPicklistValues,{recordTypeId:'$object.data.defaultRecordTypeId',fieldApiName:App_Field})
+    // AppPicklist;
+    // AppPic(event)
+    // {
+    //     this.appln = event.detail.value;
+    // }
+    temparray=[];
+    @track appdetails;
+    childevent(event)
+    {
+       this.appdetails=event.detail;
+    }
+    count=0;
+    clickme(event)
+    {
+       if(!this.temparray.includes(this.appdetails))
+       {
+         this.temparray.push(this.appdetails);
+         this.count=this.count+1;
+        if(this.count==1)
+        {
+         this.child1=true;
+        }
+        else if(this.count==2)
+        {
+         this.child2=true;
+        }
+        else if(this.count==3)
+        {
+         this.child3=true;
+        }
+        else if(this.count==4)
+        {
+         this.child4=true;
+        }
+        else if(this.count==5)
+        {
+         this.child5=true;
+        }
+     }
+     //   else
+     //  {
+     //   alert('Already app selected');
+     //  }
+ 
+    }
+    clickme1(event)
+    {
+       this.child1=false;
+    }
+    clickme2(event)
+    {
+       this.child2=false;
+    }
+    clickme3(event)
+    {
+       this.child3=false;
+    }
+    clickme4(event)
+    {
+       this.child4=false;
+    }
+    clickme5(event)
+    {
+       this.child5=false;
+    }
+    openfileupload(event)
+    {
+        const file = event.target.files[1]
+        var reader = new FileReader()
+        reader.onload=()=>{
+            var base64 = reader.result
+            this.filedata = {
+                'filename':file.name,
+                'base64':base64,
+                'recordId':this.recordId
+            }
+            console.log(this.filedata)
+        }
+    }
+    // handleclick(){
+    //     const {base64,filename,recordid} = this.filedata
+    //     uploadFile({base64,filename,recordid}).then(result=>{
+    //         console.log('${result} uploaded successfully!!')
+    //     })
+    // }
+    @track wonbutton=false;
+    @track Holdbutton=false;
+    callme(event)
+    {
+        //step1 create field lists
+        const fields = {'Customer__c':this.customer,'Opportunity_Info__c':this.OpptyInfo,
+        'Source__c': this.Sour,'Sales_Region__c':this.SalesRegion,'Sales_Status__c':this.salessts};
+        //step2 create API Record with Fields
+        const recordData = {apiName:'Opportunity_Tracking__c',fields};
+        //step3 call Imperation
+        createRecord(recordData).then(response=>{
+            alert('success:Record is created Successfully with ID:'+response.id);
+        }).catch(error=>{
+            alert('failed'+error.body.message);
+        });
+    }
+    callwon(event)
+    {
+        //step1 create field lists
+        const fields = {'Customer__c':this.customer,
+        'Source__c': this.Sour,'Sales_Region__c':this.SalesRegion,'Sales_Status__c':this.salessts};
+        //step2 create API Record with Fields
+        const recordData = {apiName:'Order_Registration__c',fields};
+        //step3 call Imperation
+        createRecord(recordData).then(response=>{
+            alert(response)
+           // opptrac_orderreg({'orreg':response}).then().catch();
+            alert('success:Record is created Successfully with ID:'+response.id);
+        }).catch(error=>{
+            alert('failed'+error.body.message);
+        });
+    }
+    resetFormAction(event)
+    {
+        // const inputFields = this.template.querySelectorAll('lightning-input');
+        // inputFields.forEach(input => {
+        //     input.value = '';}); 
+            location.reload();
+    }
+   
+}
+
+opportunity_tracking_create.js-meta.xml:
+-----------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>55.0</apiVersion>
+    <isExposed>false</isExposed>
+</LightningComponentBundle>
+
+
+
+opportunity_tracking_create.css:
+----------------------------------
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+
+optchange.html:
+--------------
+<template>
+    <lightning-layout multiple-rows="true" class="wrapper"> 
+     <template if:true={apppicklistvalues.data}>
+         <lightning-combobox 
+                          label="App"
+                          value={value}
+                          placeholder="Select App"
+                          options={apppicklistvalues.data.values}
+                          onchange={handleChange}></lightning-combobox>
+     </template>
+ </lightning-layout>
+     <lightning-layout>
+        
+         <lightning-input  label="IIoT"  checked={iiotchecck} type="checkbox" onchange={handleiiot}></lightning-input> &nbsp;
+         <lightning-input  label="IT-OT Integration"  checked={integrationchecck} type="checkbox" onchange={handleintegration}></lightning-input> &nbsp;
+         <lightning-input  label="IT/Cloud Managed Services"  checked={managedchecck} type="checkbox" onchange={handlemanaged}></lightning-input> &nbsp;
+         <lightning-input  label="Operation Management"  checked={managementchecck} type="checkbox" onchange={handlemanagement}></lightning-input> &nbsp;
+         <lightning-input  label="Decd24 Opp"  checked={dec24checck} type="checkbox" onchange={handledec24}></lightning-input> &nbsp;
+         <lightning-input  label="OPP D241"  checked={oppd241checck} type="checkbox" onchange={handleoppd241}></lightning-input> &nbsp;
+         <lightning-input  label="Security"  checked={securitychecck} type="checkbox" onchange={handlesecurity}></lightning-input> &nbsp;
+         <lightning-input  label="Robotic"  checked={roboticchecck} type="checkbox" onchange={handlerobotic}></lightning-input> &nbsp;
+         <lightning-input  label="Others"  checked={otherschecck} type="checkbox" onchange={handleothers}></lightning-input> &nbsp;
+     </lightning-layout>
+ 
+</template>
+
+
+optchange.js:
+-------------
+import { LightningElement,wire,api,track } from 'lwc';
+import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import { getPicklistValues } from 'lightning/uiObjectInfoApi';
+import App_Field from '@salesforce/schema/Checkbox__c.App__c';
+    
+export default class Optchange extends LightningElement {
+    @track appinfo;
+    @track iiotval;
+    @track integrationval;
+    @track managedval;
+    @track managementval;
+    @track dec24val;
+    @track oppd241val;
+    @track securityval;
+    @track roboticval;
+   @track otherval;
+   iiotchecck; integrationchecck; managedchecck; managementchecck; dec24checck; oppd241checck;
+   securitychecck; roboticchecck; otherschecck;
+    @wire(getObjectInfo, { objectApiName:'Checkbox__c'})
+    object;
+
+  @wire(getPicklistValues, { recordTypeId: '$object.data.defaultRecordTypeId', fieldApiName: App_Field})
+    apppicklistvalues;
+    handleChange(event)
+    {
+       this.appinfo=event.target.value;
+       const selectedevent=new CustomEvent('apptechinfo',{detail:this.appinfo});
+       this.dispatchEvent(selectedevent);
+        if(this.appinfo=='Asset Health Insight')
+       {
+           this.iiotchecck=true;
+           this.managementchecck=true;
+           this.roboticchecck=false;
+           this.securitychecck=false;
+           this.oppd241checck=false;
+           this.otherschecck=false;
+           this.dec24checck=false;
+           this.integrationchecck=false;
+           this.managedchecck=false;
+           
+           }
+     else if(this.appinfo=='Selenium'){
+            this.managementchecck=false;
+            this.roboticchecck=false;
+            this.securitychecck=false;
+            this.oppd241checck=false;
+            this.iiotchecck=false;
+            this.otherschecck=false;
+            this.dec24checck=false;
+            this.integrationchecck=true;
+            this.managedchecck=true;
+       }
+       
+       else if(this.appinfo=='Appium')
+       {
+             this.roboticchecck=true;
+             this.integrationchecck=true;
+             this.managedchecck=true;
+             this.securitychecck=true;
+             this.oppd241checck=false;
+             this.iiotchecck=true;
+             this.otherschecck=false;
+             this.dec24checck=false;
+             this.managementchecck=false;
+      
+       }
+       else if(this.appinfo=='Dot Net'){
+                this.managementchecck=true;
+                this.roboticchecck=true;
+                this.securitychecck=true;
+                this.integrationchecck=true;
+                this.oppd241checck=false;
+                this.iiotchecck=false;
+                this.otherschecck=false;
+                this.dec24checck=false;
+                this.managedchecck=false;
+         
+        }
+       
+       else if(this.appinfo=='Oracle')
+        {
+                this.roboticchecck=true;
+                this.securitychecck=true;
+                this.integrationchecck=true;
+                this.integrationchecck=true;
+                this.managedchecck=true;
+                this.managedchecck=true;
+                this.oppd241checck=false;
+                this.iiotchecck=false;
+                this.otherschecck=false;
+                this.dec24checck=false;
+                this.integrationchecck=true;
+                this.managedchecck=true;
+                this.managementchecck=false;
+           }
+        else if(this.appinfo=='JAVA')
+        {
+                this.managementchecck=true;
+                this.roboticchecck=true;
+                this.securitychecck=true;
+                this.oppd241checck=true;
+                this.iiotchecck=false;
+                this.otherschecck=false;
+                this.dec24checck=false;
+                this.integrationchecck=false;
+                this.managedchecck=false;
+        }
+        else
+        {
+                this.managementchecck=false;
+                this.roboticchecck=false;
+                this.securitychecck=false;
+                this.oppd241checck=false;
+                this.iiotchecck=false;
+                this.otherschecck=false;
+                this.dec24checck=false;
+                this.integrationchecck=false;
+                this.managedchecck=false;
+         }
+    }
+    handleiiot(event){
+     this.iiotval=event.target.value;
+    }
+    handleintegration(event){
+        this.integrationval=event.target.value; 
+    }
+    handlemanaged(event){
+        this.managedval=event.target.value;
+    }
+    handlemanagement(event){
+        this.managementval=event.target.value;
+    }
+    handledec24(event){
+        this.dec24val=event.target.value;
+    }
+    handleoppd241(event){
+        this.oppd241val=event.target.value; 
+    }
+    handlesecurity(event){
+        this.securityval=event.target.value;
+    }
+    handlerobotic(event){
+        this.roboticval=event.target.value;
+    }
+    handleothers(event){
+        this.otherval=event.target.value;
+    }
+}
+
+
+optrac_orderreg.cls:
+----------------------
+public with sharing class opptrac_orderreg 
+{
+    // @AuraEnabled (cacheable=true)
+    // public static void opptrac_orderreg(Opportunity_Tracking__c orreg)
+    // {
+    //     Order_Registration__c ordreg = new Order_Registration__c();
+    //     ordreg.Customer__c = orreg.Customer__c;
+    //     ordreg.Sales_Region__c = orreg.Sales_Region__c;
+    //     ordreg.Sales_Status__c = orreg.Sales_Status__c;
+    //     ordreg.Source__c = orreg.Source__c;
+    //     insert ordreg;
+    // }
+   public static void checkbox_orderreg(Checkbox__c chereg)
+   {                                                                                                                              
+541410001012671                                                                                                 
+         Order_Registration__c   regord = new Order_Registration__c();
+         regord.App__c                  = chereg.App__c;
+         regord.Decd24__c               = chereg.Decd24__c;
+         regord.IIOT__c                 = chereg.IIOT__c;
+         regord.IT_Cloud_Managed_Services__c = chereg.IT_Cloud_Managed_Services__c;
+         regord.IT_OT_Integration__c    = chereg.IT_OT_Integration__c;
+         regord.Operation_Management__c = chereg.Operation_Management__c;
+         regord.Opp_D241__c             = chereg.Opp_D241__c;
+         regord.Robotic__c              = chereg.Robotic__c;
+         regord.Security__c             = chereg.Security__c;
+         regord.Others__c               = chereg.Others__c;
+         insert regord;
+   }    
+} 
+ 
+
+
+
+
+
+
+
+

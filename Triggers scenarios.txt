@@ -1,0 +1,793 @@
+Q.Whenever a record is inserted into the account automatically inserted into the contact.
+   trigger SCENARIO1 on Account (after insert) {
+list c=new list();
+for(account a:trigger.new)
+{
+contact b=new contact();
+b.LastName=a.Name;
+b.AccountId=a.Id;
+c.add(b);
+}
+insert c;
+}
+
+============================================================
+
+Q. Whenever a record is inserted to the contact automatically inserted into the account.
+    trigger scenario2 on Contact (after insert) {
+ if(Recursive.flag)
+ {
+  Recursive.flag=false;
+ list a=new list();
+ for(contact c:trigger.new)
+ {
+ account a1=new account();
+ a1.Phone=c.Phone;
+ a1.Name=c.LastName;
+ a.add(a1);
+ }
+insert a;
+
+ }
+
+
+
+Q.Whenever a created opportunity object record, update total opportunities and total amount in the account object.
+   
+   trigger scenario24 on Opportunity (after insert) {
+setids=new set();
+for(Opportunity op:trigger.new)
+{
+ids.add(op.accountid);
+}
+listac=[select Total_opportunities__c,Total_Amount__c,(select id,Amount from Opportunities ) from account where id=:ids];
+for(account a:ac)
+{
+a.Total_opportunities__c=a.opportunities.size();
+decimal sum=0;
+for(opportunity p:a.opportunities)
+{
+sum=sum+p.amount;
+}
+a.Total_Amount__c=sum;
+
+}
+update ac;
+}
+
+
+Q.On contact object, whenever department equal to cse automatically insert email on the email field.
+
+
+  trigger scenario4 on Contact (before insert) {
+for(contact c:trigger.new)
+{
+if(c.Department==’CSE’)
+{
+c.Email=’testemail@gmail.com’;
+}
+}
+
+}
+
+
+Q. Whenever we modifying the inputout__c object doctor name automatically updates on the droppoff__c object text field on the relationship.
+
+trigger SCENARIO32 on Inputout__c (after update) {
+listd=[select id,name,Text__c from Dropoff1__c where Text__c=’naveen’];
+string name;
+for(Inputout__c c:trigger.new)
+{
+name=c.Doctor_Name__c;
+}
+for(Dropoff1__c dp:d)
+{
+dp.Text__c=name;
+}
+update d;
+
+}
+
+
+Scenario 1 :
+When we are trying to insert new record into object. If there is any record existing with same account name it should prevent duplicate record.
+=============================================
+trigger accountInsert on Account (before insert)
+
+{
+
+    for(Account acc : Trgger.New)
+
+    {
+
+     List<Account> mynew = [SELECT Id, Name FROM Account WHERE  Name =: acc.Name];
+
+     if(mynew.size() > 0)
+
+     {
+
+      acc.Name.addError('Account with same name is existing');
+
+     } 
+
+    }
+
+}
+
+=============================================
+
+Scenario 2 :
+Write a trigger to prefix Account Name with 'Mr.' when a new record is inserted.
+=============================================
+
+trigger accountprefix on Account(before insert)
+{
+    for(Account a : Trigger.New)
+    {
+        a.Name = 'Mr'+a.Name;
+    }
+}
+=============================================
+
+Scenario 3 :
+Whenever a new record is created into an account object. Before this new record is inserted into Account, 
+delete all the contacts records with this account name.
+=============================================
+trigger contactDeletion on Account(before insert)
+{
+    List<string> mynames = new List<string>();
+    for(Account a : Trigger.New)
+    {
+        mynames.add(a.Name);
+    }
+    List<contact> mycontacts = [SELECT Id, Name FROM Contact  WHERE Name In: mynames];
+    delete mycontacts;
+}
+
+=============================================
+Whenever a new Contact is created for an account update the corresponding account phone with the new Contact phone field.
+=============================================
+trigger updatephone on contact(after insert)
+{
+    List<Account> acc = new List<Account>();
+    for(Contact c : Trigger.New)
+    {
+      Account a = [SELECT Id, Phone FROM Account WHERE Id =: c.AccountId];
+      a.phone = c.phone;
+      acc.add(a);
+    }
+    update acc;
+}
+
+
+
+Scenario 1 :
+Whenever Customer record is updated, before updating the record create a new record in test object with old values of the customer record.
+=============================================
+trigger CustomerUpdate on Customer__c (before update)
+
+{
+
+    List<Test__c> test = new List<Test__c>();
+
+    for(Customer__c x: Trigger.old)
+
+    {
+
+     Test__c t = new Test__c();
+
+     t.Name = x.Name;
+
+     t.salary__c = x.salary__c;
+
+     t.phone__c = x.phone__c;
+
+     test.add(t);
+
+    }
+
+  insert test;
+}
+=============================================
+Scenario 2 :
+To update the owner of a case based on the values selected within a picklist and populate the owner field with the created by field data. 
+When we have selected any FieldName = Status
+
+Picklist values are = 
+                             priced - (Initial)
+                             priced - (Re-priced)
+                             priceFile Loaded
+=============================================
+trigger CaseTrigger on Case(before update)
+{
+    for(Case c : Trigger.New)
+    {
+     If(c.Status == 'priced - (Intial)'
+     || c.Status == 'priced - (Repriced)' 
+     || c.Status == 'priceFile Loaded')
+     {
+         c.owenerId = c.createdById;
+     }
+    }
+}
+=============================================
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+Scenario 3 : 
+Write a trigger that will prevent a user from creating a lead that already existed as a Contact.  
+We'll use the lead/contacts email address to detect duplicates. Whenever the lead is created or updated.
+1. Lead has an email address 
+2. Try to find a matching contact based or email address.
+3. If a match is found, give the user an error.
+4. If a match is not found, do nothing.
+=============================================
+trigger FindDup on Lead (before insert, before update)
+{
+    for(Lead myLead : trigger.New)
+    {
+     if(myLead.Email != null)
+     {
+      List<Contact> dupes = [SELECT Id FROM Contact WHERE Email = : myLead.Email];
+      if(dupes! = null && dupes.size() >0)
+      {
+          String errorMessage = 'Duplicate Contact Found !!';
+          errorMessage + = 'Record ID is' + dupes[0].Id;
+          myLead.addError(errorMessage);
+      }
+     }
+    }
+} 
+=============================================
+Scenario 1 :
+Create "Sales Rep" field with the data type(Text) on the Account object When we create the Account record,
+ the Account owners will be automatically added to the sales rep field. When we update the Account owner of the record, 
+then also the Sales Rep will be automatically updated.
+
+Trigger :
+=============================================
+trigger UpdateSalesRep on Account(Before insert, Before update)
+{
+ set<Id> setAccowner = new.set<Id>();
+  for(Account Acc : trigger.New)
+  { 
+   setAccowner.add(Acc.ownerId);
+   }
+
+Map<Id, user> usermap = new Map<Id, user>([SELECT Name FROM  user WHERE Id IN: setAccowner]);
+ for(Account Acc : Trigger.New)
+ {
+   user usr = usermap.get(Acc.ownerId);
+   Acc.sales_rep__c = usr.Name;
+    }
+  } 
+}
+============================================
+
+Scenario 1 :
+Create "Sales Rep" field with the data type(Text) on the Account object When we create the Account record, 
+the Account owners will be automatically added to the sales rep field. When we update the Account owner of the record, 
+then also the Sales Rep will be automatically updated.
+
+Trigger :
+=============================================
+trigger UpdateSalesRep on Account(Before insert, Before update)
+{
+ set<Id> setAccowner = new.set<Id>();
+  for(Account Acc : trigger.New)
+  { 
+   setAccowner.add(Acc.ownerId);
+   }
+
+Map<Id, user> usermap = new Map<Id, user>([SELECT Name FROM user WHERE Id IN: setAccowner]);
+ for(Account Acc : Trigger.New)
+ {
+   user usr = usermap.get(Acc.ownerId);
+   Acc.sales_rep__c = usr.Name;
+    }
+  } 
+}
+============================================
+Scenario 2 :
+Create a field called "Contact Relationship" checkbox on the contact object and create the object called "Contact Relationship" which is related list to the Contacts (Lookup Relationship).
+Now build a logic when we create contact by checking Contact Relationship checkbox, then contact Relationship will be created automatically for that contact.
+
+Trigger :
+============================================
+trigger CreateCRonContactCreation on Contact(after insert)
+{
+ if(trigger.isAfter)
+ {
+  if(trigger.isInsert)
+  {
+    ContactMasterHandler ConIns = New ContactMasterHandler();
+    ConIns.createContactRelationshipByContact(trigger.new);
+  }
+}
+============================================
+
+Apex Class :
+============================================
+public class ContactMasterhandler
+{
+  public void createContactRelationShipByContact(List<contact> lstCon)
+  {
+   List<Contact_Relationship__c> conlist = new List<Contact_Relationship>(); 
+
+ for(Contact newcon : lstCon)
+ {
+   if(newcon.Contact_Relationship__c == true)
+   {
+     Contact_Relationship__c CR = new Contact_Relationship__c();
+     CR.Name = newcon.LastName;
+     CR.Contact__c = newConts.id;
+     ConList.add(CR);
+     }
+    }
+   insert ConList;
+  }
+}
+============================================
+Scenario 1 :
+When we are trying to insert the record into an object If there is any record existing with the same account name it should prevent duplicate record.
+
+Trigger :
+============================================
+trigger accounInsert on Account(before insert)
+{
+//Check for all the new account record in for loop
+ for(Account a : Trigger.New)
+ {
+//Query
+  List<Account> mynew = [SELECT Id, Name FROM Account WHERE Name= :a.Name];
+  if(mynew.size() > 0)
+  {
+//Add Error message if there is record after querying 
+   a.Name.addError('Account with name is existing'); 
+  }
+ }
+}
+============================================
+
+Now let's try to write test class of the same salesforce apex trigger written above.
+
+Test Class :
+============================================
+@isTest //Annotation so that salesforce can undertand this is test class
+public class AccountInsert
+{
+//Defind testmethod keyword while defining method 
+ public static testMethod void testInsert()
+ {
+//Defind variables
+  String addError;
+  String myname = 'SalesforceKid';
+//Create an instance of an object on which you want to check this trigger is working or not. 
+  Account a2 = new Account(name = myname);
+//Query 
+  List<Account> x =[SELECT Id, Name FROM Account WHERE Name= :myname];
+ if(x.size() < 1)
+  {
+//Check if list is empty  
+   System.assertEquals(0, x.size());
+//Insert the record
+   Insert a2;
+  }
+else
+ {
+//Otherwise show error if there is something in the list with same name
+  addError ='Existing';
+  }
+//Check whether the error you are getting is similar to the one you added
+System.assertEquals('Existing', addError);
+ }
+}
+============================================
+
+Coool Right 😎 ?? Quite easy when you breakdown the code first and try to replicate the same functionality inside your test class.
+
+Now let's consider another scenario where we can learn test classes for a trigger once again
+
+Scenario 2 :
+Write a trigger to prefix Account Name with 'Mr.' whenever a new record is inserted.
+
+Trigger :
+============================================
+trigger accountprefix on Account(before insert)
+{
+//for every new account
+ for(Account a : Trigger.New)
+ {
+//append 'Mr.' with every account name 
+  a.Name = 'Mr.' + a.Name;
+ }
+}
+============================================
+
+Now let's try again to write test class of the same salesforce apex trigger written above.
+
+Test Class :
+============================================
+@isTest //Annotation of test class
+public class AccountInsert
+{
+//define testmethod 
+ public static testmethod void testinsert()
+ {
+//Create new account instance and pass your name as string input 
+  Account a = new Account(name = 'SalesforceKid');
+//Append Mr. with the account name
+  a.name = 'Mr.' + a.name;
+  insert a;
+  }
+} 
+============================================
+
+We just replicated what our trigger is performing in test class as well correct ?? that's what we have to check.
+
+Scenario 3 :
+Whenever a new record is created in account object. Before this new record is inserted into Account, 
+delete all the contacts records with this account name.
+
+Trigger :
+============================================
+trigger contactDeletion on Account(before insert)
+{
+//define list to store all the account names
+ List<String> mynames = new List<String>();
+//bulkifying for every new Account record 
+  for(Account a : Trigger.New)
+ {
+//Add all account names in the list 
+  mynames.add(a.name);
+ }
+//Query to get all the list of contacts where Name is like Name inside mynames
+List<Contact> mycontacts = [SELECT Id, Name FROM Contact WHERE
+                                                Name IN : mynames];
+//delete all the mycontacts list from salesforce
+delete myContacts;
+}
+============================================
+
+Now let's write test class of the same salesforce apex trigger written above.
+
+Test Class :
+============================================
+@isTest //Define Annotation of test class
+public class AccountInsert
+{
+ public static testmethod void testdeletion()
+ {
+//Store any string name
+  String myname = 'SalesforceKid';
+ //Pass that string name as a Input to Account 
+  Account a = new Account(name = myname);
+//Pass lastname to contact as a string 
+  Contact con = new Contact(lastname = 'Salesforcekid'); 
+  insert con;
+//Find out the contact with same name as Account string myname
+   Contact c = [SELECT Id, Name FROM Contact WHERE Name =:  myname LIMIT 1];
+   if(c != null)
+  {
+//Check whether the value of contact and account is similar
+   System.assertEquals(c.Name, a.Name);
+//Delete the contact if its not null
+   delete c;
+  }
+//Then Lastly Insert The record 
+insert a;
+ }
+}
+============================================
+Create an Apex trigger for Opportunity that adds a task to any opportunity set to 'Closed Won'.
+
+trigger ClosedOpportunityTrigger on Opportunity (after insert, after update) {
+
+    List<Task> taskList = new List<Task>();
+    
+    for(Opportunity opp : Trigger.new) {
+		
+		//Only create Follow Up Task only once when Opp StageName is to 'Closed Won' on Create
+		if(Trigger.isInsert) {
+			if(Opp.StageName == 'Closed Won') {
+				taskList.add(new Task(Subject = 'Follow Up Test Task', WhatId = opp.Id));
+			}
+		}
+		
+		//Only create Follow Up Task only once when Opp StageName changed to 'Closed Won' on Update
+		if(Trigger.isUpdate) {
+			if(Opp.StageName == 'Closed Won' 
+			&& Opp.StageName != Trigger.oldMap.get(opp.Id).StageName) {
+				taskList.add(new Task(Subject = 'Follow Up Test Task', WhatId = opp.Id));
+			}
+		}       
+    }
+
+    if(taskList.size()>0) {        
+        insert taskList;        
+    }    
+}
+
+
+
+
+Trigger Scenario: Prevent the deletion of accounts if they have related opportunities.
+My approach:
+Trigger Handler class:
+
+public class ClassToPreventDelOfAccts {
+    
+  public void ThrowErrorMessageToUser(List<Account> listacc){
+    for(Account acc:[SELECT Id FROM Account
+           WHERE Id IN (SELECT AccountId FROM Opportunity) AND
+           Id IN :listacc]){
+      Trigger.oldMap.get(acc.Id).addError(
+      'Cannot delete account with related opportunities.');
+    }
+  }
+}
+
+Trigger:
+trigger TriggerOnAccount on Account (before delete) {
+        
+     ClassToPreventDelOfAccts cs = new ClassToPreventDelOfAccts();
+     cs.ThrowErrorMessageToUser(Trigger.Old);
+}
+                       (OR)
+Trigger Scenario: Prevent the deletion of accounts if they have related opportunities.
+My approach:
+Trigger Handler class:
+
+public class ClassToPreventDelOfAccts {
+    
+  public void ThrowErrorMessageToUser(List<Account> listacc){
+    for(Account acc:[SELECT Id FROM Account
+           WHERE Id IN (SELECT AccountId FROM Opportunity) AND
+           Id IN :listacc]){
+      Trigger.oldMap.get(acc.Id).addError(
+      'Cannot delete account with related opportunities.');
+    }
+  }
+}
+
+Trigger:
+trigger TriggerOnAccount on Account (before delete) {
+        
+     ClassToPreventDelOfAccts cs = new ClassToPreventDelOfAccts();
+     cs.ThrowErrorMessageToUser(Trigger.Old);
+}
+===============================================================
+
+Scenario: When the Account is updated, update all the related opportunities stage to Closed lost if an Opportunity created date is greater than 30 days from today and stage is not equal to closed won. 
+Approach used: Triggers
+
+Trigger Handler class:
+public class ClassToUpdateRelatedOpportunities {
+  public static void updateOpportunities(List<Account> listacc){
+    Set<Id> acctIds = new Set<Id>();
+    for(Account acc:listacc){
+      acctIds.add(acc.Id);
+    }
+    List<Opportunity> opplistToUpdate = new List<Opportunity>();
+    DateTime day30 = System.now()-30;
+    List<Opportunity> opplist = [SELECT Id,AccountId,StageName,CreatedDate,CloseDate FROM Opportunity WHERE AccountId IN :acctIds];
+    if(opplist.size()>0){
+    for(Opportunity opp:opplist){
+      if(opp.CreatedDate<day30 && opp.StageName!='Closed Won'){
+        opp.StageName='Closed Lost';
+        opp.CloseDate=System.today();
+        opplistToUpdate.add(opp);
+      }
+    }
+    }
+    if(opplistToUpdate.size()>0){
+    update opplistToUpdate;
+    }
+  }
+}
+
+Trigger:
+trigger TriggerOnAccount on Account (after update) {
+  ClassToUpdateRelatedOpportunities.updateOpportunities(Trigger.New);
+}
+============================================
+trigger ApexTrigger on Opportunity (before update) 
+{ 
+    // Only available in Update and Delete Trigger
+    for(Opportunity oldOpp: Trigger.old)
+    { 
+        for(Opportunity newOpp: Trigger.new)
+        {
+            if(oldOpp.id == newOpp.id && oldOpp.Amount != newOpp.Amount)
+                newOpp.Amount.addError(‘Amount cannot be changed’); // Trigger Exception
+        }
+    }    
+}
+==============================================================================
+Creates the number of contacts which are equal to the number which 
+we will enter in the Number of Locations field on the Account Object.
+
+trigger ContactsCreation on Account (after insert) {
+list<contact> listContact = new list<contact>();
+map<id,decimal> mapAcc = new map<id,decimal>();
+  for(Account acc:trigger.new){
+      mapAcc.put(acc.id,acc.NumberofLocations__c);
+     }
+        if(mapAcc.size()>0 && mapAcc!=null){
+            for(Id accId:mapAcc.keyset()){
+               for(integer i=0;i<mapAcc.get(accId);i++){
+                 contact newContact=new contact();
+                 newContact.accountid=accId;
+                 newContact.lastname='contact'+i;
+                 listContact.add(newContact);
+                 }
+              }
+         }
+if(listContact.size()>0 && listContact!=null)
+insert listContact;
+}
+===================================================================
+When ever Opportunity "Stage" is modified to "Closed Won" then set "Close Date" as 
+"Today Date" and "Type" as "New Customer".
+
+trigger OpporUpdate on Opportunity (before update) {
+     
+    Map<Id,Opportunity> oppOld = Trigger.oldMap;
+     
+    Map<Id,Opportunity> oppNew = Trigger.newMap;
+     
+    Set<Id> keys =oppOld.keySet();
+     
+    for(Id rid :keys){
+         
+        Opportunity oldOpportunity = oppOld.get(rid);
+         
+        Opportunity newOpportunity = oppNew.get(rid);
+         
+        if(oldOpportunity.stagename!='Closed Won' && newOpportunity.stagename=='Closed Won'){
+             
+            newOpportunity.closeDate=System.today();
+             
+            newOpportunity.type='New Customer';
+             
+        }
+    }
+}
+===========================================================
+when a new contact is created for a existing account then set contact otherphone as account phone.
+trigger ContactAccountRelation on Contact (before insert) {
+     
+    Set<Id> accIdSet = new Set<Id>();
+     
+    for(Contact con : trigger.new){
+        if(String.isNotBlank(con.AccountId)){
+            accIdSet.add(con.AccountId);
+        }
+    }
+     
+    if(accIdSet.size() > 0){
+        Map<Id,Account> accMap = new Map<Id,Account>([Select Id, Phone From Account where id In:accIdSet]);
+         
+        for(Contact con : trigger.new){
+            if(con.AccountId != null && accMap.containskey(con.AccountId)){
+                if(accMap.get(con.AccountId).Phone != null){
+                    con.OtherPhone = accMap.get(con.AccountId).Phone;
+                }
+            }
+        }
+         
+    }
+}
+====================================================================
+The following Trigger will fires when we try to create the account with same name i.e. 
+Preventing the users to create Duplicate Accounts
+WAY-1
+
+Trigger Code: AccountDuplicateTrigger.apxt
+
+trigger AccountDuplicateTrigger on Account (before insert, before update) {
+    for(Account a:Trigger.new)
+    {
+        List<Account> acc=[select ID from account where Name=:a.Name and Rating=:a.rating];
+        if(acc.size()>0)
+        {
+            a.adderror('You cannot create a duplicate account');
+        }
+    }
+}
+
+WAY-2 :Here, avoid SOQL Queries or DML statements inside FOR Loops
+trigger AccountDuplicateTrigger on Account (before insert, before update) {
+     
+    list<string> acc = new list<string>();
+    for(Account a:Trigger.new)
+    {
+        acc.add(a.name);
+    }
+    list<Account> listOfDuplicateAccounts = [select id, Name from Account where Name in :acc];
+    for(Account account:trigger.new)
+    {
+        if(trigger.isInsert){
+            if(listOfDuplicateAccounts.size()!=0)
+            {
+                account.addError('Account already exists with this name');
+            }
+        }
+        if(trigger.isUpdate)
+        {
+            for(Account oldaccount :trigger.old)
+            {
+                if(account.Name!=oldAccount.Name && listOfDuplicateAccounts.size()!=0)
+                {
+                    account.addError('Account already exists with this name');
+                }
+            }
+        }
+    }  
+}
+===============================================================================
+Write a trigger in which if an account that has related contacts and 
+the user tries to delete that account it throws you an error "Account cannot be deleted".
+trigger PreventAccountFromDeletion on Account (before delete){
+     
+    List<account> accList = new List<account>();  
+    Set<id> accIdSet = new Set<id>();  
+    for(Account acc : Trigger.old)  
+    {  
+        accIdSet.add(acc.id);  
+    }  
+   
+ Map<Id, Account> accts = new Map<Id, Account>([Select Id, (Select Id from contacts) from Account where id in :accIdSet]);
+     
+    for(Account acc : Trigger.old)
+    {
+        if(accts.get(acc.id).contacts.size()>0)
+        {
+            acc.adderror('Account cannot be deleted');
+        }
+    }                                       
+     
+}
+===================================================================
+
+Counts number of contacts on Account using trigger (Create Lookup Summary field using Trigger) ?
+
+»» TRIGGER :
+trigger ContCount on Contact (After Delete, After Insert, After Update, After Undelete) {
+
+If (Trigger.isInsert || Trigger.isDelete || Trigger.isUpdate || Trigger.isUndelete) {
+
+CountContact.ContContacts (Trigger.New, Trigger.Old);
+}
+}
+
+»» HANDLER CLASS :
+Public class CountContact {
+
+Public static void ContContacts (list NewContact, List oldContact)
+{
+set ContAccIds = new set(); try{ if (NewContact != Null){ for (Contact con:newContact)
+{
+if(Con.AccountId != Null){ ContAccIds.add(con.AccountId);
+}
+}
+}
+if (oldContact != Null){ for (Contact con:oldContact){ if(Con.AccountId != Null)
+{
+ContAccIds.add(con.AccountId);
+}
+}
+}
+List AccList = [SELECT Id, ContCount__c, (SELECT Id FROM Contacts) FROM Accoun t Where Id IN :ContAccIds];
+
+if (AccList != Null){ for (Account AccValue:AccList)
+{
+accvalue.ContCount__c = accValue.Contacts.Size();
+}
+}
+if(!AccList.isEmpty()){ update AccList;
+}
+}
+Catch (Exception e){ System.debug ('Get Message' + e.getMessage());
+}
+}
+}
+

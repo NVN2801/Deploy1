@@ -1,0 +1,285 @@
+html
+
+<template>    
+    <div>
+        <div style="height:68px;background-image: radial-gradient(rgb(11, 92, 171),rgb(1, 68, 134), rgb(3, 45, 96), rgb(3, 35, 77)); border:2px solid red" >
+                <div style="display:inline-block;height:60px;align-items:center;padding-left:3%;padding-top:20px">
+                    <div class="menu"></div>
+                    <div class="menu"></div>
+                    <div class="menu"></div>
+                </div>
+                <div  style="display: inline-block;margin-left:4%;">
+                    <i style="font-size: 30px;color:rgb(255, 255, 255)">Cloud Surveillance</i> <br> 
+                    <span style="padding-left:10%;color:white">we make your work better</span>
+                </div>
+                <div style="display: inline-block;margin-left:18%;position:absolute;padding-top:16px">
+                    <span style="font-weight: bold;font-size:20px;color:white">Unit-II, Sreepuram</span>
+                </div> 
+                <div style="float:right;padding-right:3%;height:65px;align-items:center;display:flex">
+                    <input style="padding:6px;border-radius:6px;border:1px solid red" type="search" id="gsearch" placeholder="Search.." size="40%">&ensp;
+                    <lightning-icon icon-name="utility:user" size="small"  variant="bare" alternative-text="User" ></lightning-icon>
+                </div>
+        </div>
+        <!-- <hr class="between" /> -->
+        <div style="border-style:inset;border-top-style:hidden;border-left-style:hidden;border-right-style:hidden;padding-left:7%">
+            <div style=" color:firebrick;font-weight:bold;  display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; padding: 20px;">
+                <div>
+                        Record Number:<br/>
+                        <span style="color:black;">PC/Min-0000458</span>
+                </div>
+                <div>
+                        Lot Number:<br/>
+                        <span style="color:black;">PC/Ln-0000458 </span>
+                </div>
+                <div>
+                        Process Date & Time: <br/>
+                        <span style="color:black;"> December 2nd 2022</span>
+                </div>
+                <div>
+                        Last Approver: <br/>
+                        <span style="color:black;">Vikas Malhotra</span>
+                </div>
+                <div>
+                        Next Approver:<br/>
+                        <span style="color:black;"> binod verma </span>
+                </div>
+            </div>
+        </div>
+        <br/>
+
+        <div>
+            <div>
+                <lightning-progress-indicator class="custom-css" type="base" current-step={selectedstage}  has-error="" variant="shaded">
+                    <lightning-progress-step value="1" label="Mining" ></lightning-progress-step>
+                    <lightning-progress-step value="2" label="Crushers"></lightning-progress-step>
+                    <lightning-progress-step value="3" label="Raw Mill"></lightning-progress-step>
+                    <lightning-progress-step value="4" label="Raw Mix"></lightning-progress-step>
+                    <lightning-progress-step value="5" label="Rotary Kiln"></lightning-progress-step>
+                    <lightning-progress-step value="6" label="Cool Process"></lightning-progress-step>
+                    <lightning-progress-step value="7" label="Transportation"></lightning-progress-step>
+                    <lightning-progress-step value="8" label="Sales"></lightning-progress-step>
+                </lightning-progress-indicator>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(8, 1fr);gap:15%; padding-top: 5px;" >
+                <b>
+                    <span style="position:absolute;margin-left: 14%;">Mining</span> 
+                    <span style="position:absolute;margin-left: 23.6%;">Crushers</span> 
+                    <span style="position:absolute;margin-left: 33.5%;">Raw Mill</span> 
+                    <span style="position:absolute;margin-left: 43.5%;">Raw Mix</span> 
+                    <span style="position:absolute;margin-left: 53%;">Rotary Kiln</span> 
+                    <span style="position:absolute;margin-left: 62.5%;">Cool Process</span> 
+                    <span style="position:absolute;margin-left: 72%;">Transportation</span> 
+                    <span style="position:absolute;margin-left: 83.5%;">Sales</span>
+                </b>
+                 
+            </div>
+        </div>
+        <br/><br/><br/>
+        <!-- <div style="margin-left:12%">  -->
+        <div class="slds-align_absolute-center">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 75px;">
+                <div>
+                    <button type="button" class="proj" onclick={tapme1} data-id="mining">Mining</button> &emsp;   &emsp;   &emsp;  
+                </div>
+                <div>
+                    <button type="button" class="proj" onclick={tapme2} data-id="crushers">Crushers</button>  &emsp;   &emsp;   &emsp;  
+                </div>
+                <div>
+                    <button type="button" class="proj" onclick={tapme3} data-id="rawMill">Raw Mill</button>  &emsp;   &emsp;   &emsp;  
+                </div>
+                <div>
+                    <button type="button" class="proj" onclick={tapme4} data-id="rawmix">Raw Mix</button> 
+                </div>
+                <div>
+                    <button type="button" class="proj" onclick={tapme5} data-id="rotarykiln">Rotary Kiln</button> &emsp;   &emsp;   &emsp;   
+                </div>
+                <div>
+                    <button type="button" class="proj" onclick={tapme6} data-id="coolprocess">Cool Process</button> &emsp;   &emsp;  &emsp;     
+                </div>
+                <div>
+                    <button type="button" class="proj" onclick={tapme7} data-id="transportation">Transportation</button> &emsp;   &emsp;  &emsp;      
+                </div>
+                <div>
+                <button type="button" class="proj" onclick={tapme8} data-id="sales">Sales</button>  
+                </div>
+            </div>
+        </div>
+        <!-- </div> -->
+    
+        <br/><br/>
+        <div>
+            <div class="slds-form-element buttons slds-text-align_center">
+                <button class="slds-button slds-button_outline-brand buttonn">Previous</button>&emsp;  
+                <button class="slds-button slds-button_destructive buttonn">Next</button>  
+            </div>
+        </div>
+    
+    </div>
+</template>
+
+js
+---
+import { LightningElement } from 'lwc';
+
+export default class Newproject extends LightningElement 
+{
+    selectedstage
+    stages=[];
+  
+    tapme1() 
+    {
+        if( !this.stages.includes('mining') ){
+          this.selectedstage="1"   
+            this.stages.push('mining');    
+             this.template.querySelector('[data-id="mining"]').className='beforebutton';   
+                 }
+    }
+    tapme2()
+    {
+        if(this.stages.includes('mining') && !this.stages.includes('crushers') ){
+            this.selectedstage="2"
+            this.template.querySelector('[data-id="mining"]').className='afterbutton';
+            this.template.querySelector('[data-id="crushers"]').className='beforebutton';
+                this.stages.push('crushers');
+                 }
+      
+    }
+    tapme3()
+    { 
+        if(this.stages.includes('crushers') && !this.stages.includes('rawMill')){
+            this.selectedstage="3"  
+             this.template.querySelector('[data-id="crushers"]').className='afterbutton';   
+            this.template.querySelector('[data-id="rawMill"]').className='beforebutton';
+            this.stages.push('rawMill');
+          }
+    }
+    tapme4()
+    {
+        if(this.stages.includes('rawMill') && !this.stages.includes('rawmix')){
+            this.selectedstage="4"  
+               this.template.querySelector('[data-id="rawMill"]').className='afterbutton';   
+             this.template.querySelector('[data-id="rawmix"]').className='beforebutton';
+                   this.stages.push('rawmix');
+               }
+    }
+    tapme5()
+    {
+        if(this.stages.includes('rawmix') && !this.stages.includes('rotarykiln')){
+            this.selectedstage="5"  
+          this.template.querySelector('[data-id="rawmix"]').className='afterbutton';   
+        this.template.querySelector('[data-id="rotarykiln"]').className='beforebutton'; 
+                this.stages.push('rotarykiln');                
+              }
+    }
+    tapme6()
+    {
+        if(this.stages.includes('rotarykiln') && !this.stages.includes('coolprocess')){
+            this.selectedstage="6"  
+         this.template.querySelector('[data-id="rotarykiln"]').className='afterbutton'; 
+                this.template.querySelector('[data-id="coolprocess"]').className='beforebutton';     
+                this.stages.push('coolprocess');                      
+                }
+    }
+    tapme7()
+    {
+        if(this.stages.includes('rotarykiln') && !this.stages.includes('transportation')){
+            this.selectedstage="7"
+              this.template.querySelector('[data-id="coolprocess"]').className='afterbutton'; 
+        this.template.querySelector('[data-id="transportation"]').className='beforebutton';  
+                this.stages.push('transportation');                          
+                }
+    }
+    tapme8()
+    {
+        if(this.stages.includes('transportation') && !this.stages.includes('sales')){
+            this.selectedstage="8"
+        this.template.querySelector('[data-id="transportation"]').className='afterbutton';
+            this.template.querySelector('[data-id="sales"]').className='beforebutton';
+            this.stages.push('sales');    
+     }
+    }
+    clickme(event)
+    {
+       
+    }
+}
+
+css
+--------
+.custom-css {
+  --lwc-progressBarColorBackgroundFill: rgb(240, 41, 41);
+  --lwc-progressBarcolorBackgroundIndicatorDot: green;
+
+}
+
+.menu {
+  width: 30px;
+  height: 3px;
+  background-color: rgb(255, 255, 255);
+  margin: 6px 2%;
+}
+
+.pro
+{
+  background-color:darkblue;
+   color:white;
+   font-size: medium;
+}
+.between {
+  border: 3px linen;
+  margin-left:10px;
+  margin-right:10px;
+}
+
+.sss
+{
+  padding-left:200px;
+    gap: 10px;
+}
+
+.proj
+{
+  width:150px;
+  height:100px;
+  border-radius: 10px;
+  border:2.5px solid red;
+  font-weight: bold;
+  font-size: 15px;
+  /* margin: 20px 20px 20px 20px; */
+}
+.search
+{
+    width: 200px;
+    float:right;
+}
+.buttonn
+{
+    width:100px;
+    height:30px;
+    align-items: center;
+    
+}
+
+.afterbutton{
+  font-weight: bold;
+ background-color: rgb(211, 248, 163);
+ border-color: rgba(1, 116, 1, 0.911);
+ height: 100px;
+ width: 150px;
+ border-radius: 10px;
+ gap: 5px;
+
+}
+
+ .beforebutton{
+  font-weight: bold;
+  color: white;
+  background-color: rgb(240, 27, 27);
+  border-color: rgba(136, 1, 1, 0.911);
+  height: 100px;
+  width: 150px;
+  border-radius: 10px;
+  gap: 5px;
+  box-shadow: 0 0 5px 2px #fff;
+ }
+
