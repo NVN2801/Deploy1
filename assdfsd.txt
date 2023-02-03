@@ -1,0 +1,279 @@
+<template>
+	<div class="salesback" style={backgroundStyle}>
+
+			<div class="headertext">
+				Cloud Surveillance <br>
+        	</div>
+
+			<div class="subheadertext">
+				We make your work better
+			</div>
+
+			<div class="midHeaderText">
+				<u>Unit-II,Sreepuram</u>
+			</div> 
+
+			<div class="icon">
+				<lightning-icon icon-name="utility:user" alternative-text="Doc image"></lightning-icon>
+			</div>
+
+			<div class="input">
+				<lightning-input placeholder="Search your Queue..."></lightning-input>
+			</div>
+
+	</div>
+
+	<div class="second">
+
+			<div>
+				<lightning-icon class="icon2" icon-name="utility:user" alternative-text="Doc image"></lightning-icon>
+			</div>
+
+			<div class="name">
+				<b>Hey,John wick..!</b>
+			</div>
+
+			<diV class="buttons">
+				<button class="slds-button slds-button_brand"> Register Lead </button>
+				<button class="slds-button slds-button_brand"> Deal Dashboard </button>
+			</diV>
+
+	</div>
+	<div>
+			<div class="barchart">
+			</div>	
+			<div class="container">
+				<lightning-layout horizontal-align={horizontalAlign}>
+					<lightning-card class="card">
+						<p class="cart_head">Business | Sales</p>
+						<p class="cart_subhead">Value your business here​</p><br>
+						<button class="slds-button slds-button_brand cart_btn" onclick={onclicksales} > Learn more </button>
+					</lightning-card>
+
+					<lightning-card class="card">
+
+						<p class="cart_head">Business | Products​ </p>
+						<p class="cart_subhead">Find your product updates here​</p><br>
+						<button class="slds-button slds-button_brand cart_btn"> Learn more </button>
+						
+					</lightning-card>
+
+				</lightning-layout>
+				<lightning-layout horizontal-align={horizontalAlign}>
+					<lightning-card class="card">
+						<p class="cart_head">Business | Turnover </p>
+						<p class="cart_subhead">Year, Month and Daily Turnover</p><br>
+						<button class="slds-button slds-button_brand cart_btn"> Learn more </button>
+					</lightning-card>
+					<lightning-card class="card">
+						<p class="cart_head">Business | Dealers​</p>
+						<p class="cart_subhead">Find your dealer’s updates here​</p><br>
+						<button class="slds-button slds-button_brand cart_btn"> Learn more </button>	
+					</lightning-card>
+				</lightning-layout>
+			</div>
+	</div>
+     <template if:true={popup}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_small" >
+            <div class="slds-modal__container">  
+				         
+                <div class="slds-modal__header " style="border-color:red">
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Sales Details </h2>
+                </div>
+				
+                
+                <div class="slds-form_horizontal slds-modal__content slds-p-around_Medium slds-form slds-grid slds-wrap" style="position: relative;height:30%; padding-left:10%; padding-top:3%" id="modal-content-id-1">
+                    
+                    <lightning-combobox
+                        class="slds-size_1-of-2"
+                        name="Select Unit"
+                        label="Select Unit"
+                        value={UnitVal}
+                        options={UnitOptions}
+                        onchange={UnitHandlechange} >
+                    </lightning-combobox> 
+                </div>
+                <div class="slds-modal__footer" style="text-align: center; border-color:red">
+                    <!-- <lightning-button variant="brand" label="Save" title="Save" onclick={saveHandler}></lightning-button>&nbsp;
+                    <lightning-button variant="destructive" label="Close" title="Close" onclick={closeHandler}></lightning-button> -->
+                
+	</div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+</template>
+
+
+
+import { LightningElement } from 'lwc';
+import backgroundUrl from '@salesforce/resourceUrl/Dummy_Background';
+const UnitOptions =[
+    
+    {label:'Unit-I',value:'Unit-I'},
+    {label:'Unit-II',value:'Unit-II'},
+]
+
+export default class Salespage extends LightningElement {
+  popup=false;
+   UnitOptions =UnitOptions;
+  
+    get backgroundStyle() {
+        return `background-image:url(${backgroundUrl})`;
+    }
+    onclicksales(){
+     this.popup=true;
+    }
+    UnitHandlechange(){
+
+    }
+
+}
+
+
+
+
+
+.salesback{
+	/* background-image: url('/resource/Dummy_Background'); */
+	height: 15%;
+	width: 1550px;
+	background-color: rgb(2, 2, 41);
+	border-style: solid;
+	border-color: red;
+	margin-bottom: 30Px;
+	margin-top: -20px;
+	margin-left: -15px;
+	font: 'Eras Light ITC';
+}
+
+
+
+.headertext{
+	color: white;
+	font-size: 2.5rem;
+	margin-left: 25px;
+	font: 'Eras Light ITC';
+}
+
+
+
+.subheadertext{
+	color: white;
+	font-size: 1rem;
+	margin-left: 80px;
+	margin-top: -5px;
+}
+
+
+
+.midHeaderText{
+	color: white;
+	font-size: 1.2rem;
+	text-align: center;
+	margin-top: -45px;
+}
+
+
+
+.input{
+	width: 15rem;
+	margin-left: 73rem;
+	margin-top: -50px;
+	
+}
+
+
+
+
+
+.icon{
+	margin-left: 90rem;
+	margin-top: -33px;	
+}
+
+
+
+.second{
+	height: 12%;
+	width: 1550px;
+	background-color: rgba(155, 155, 158, 0.581);
+	margin-top: -30px;
+	margin-left:-15px;
+}
+
+
+
+.buttons{
+	margin-left: 73rem;
+	margin-top: -35px;
+}
+
+
+
+.name{
+	color: white;
+	font-size: 30px;
+	margin-left: 50px;
+	margin-top:-40px;
+}
+
+
+
+.icon2{
+	color: black;
+	margin-top: 19px;
+	margin-left: 15px;
+}
+
+
+
+.barchart{
+	background-image: url('/resource/salesBarChart');
+	background-size: 100%;
+	width: 450px;
+	height: 400px;
+	/* border-style: solid;
+	border-color: rgb(162, 23, 23); */
+	margin-top: 50px;
+	margin-left: 50px;
+}
+
+
+
+.container{
+	margin-left: 600px;
+	margin-top: -420px;		
+	/* border-style: solid;
+	border-color: rgb(162, 23, 23);	 */
+}
+
+
+
+.card{
+	margin : 20px;
+	width : 380px;
+	height : 180px;
+	border-style : solid;
+	border-color : rgb(162, 23, 23);
+}
+
+
+
+.cart_head{
+	text-align: center;
+	font-size: 20px;
+}
+
+
+
+.cart_subhead{
+	text-align: center;
+	font-size: 15px;
+}
+
+
+
+.cart_btn{
+	margin-left: 138px;
+}

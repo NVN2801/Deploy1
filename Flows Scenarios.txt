@@ -1,0 +1,65 @@
+1. Clone Records using Screen Flows : Use Flow to Clone Records
+https://accidentalcoder.blogspot.com/2020/06/screen-flows-clone-records.html
+2. Upload Files using Screen Flows and Create Record Forms : Upload File from Flow
+https://accidentalcoder.blogspot.com/2020/06/screen-flows-file-upload.html
+3. Use Flows for List Views and Actions on Multiple Records : Use Flow for List View
+https://accidentalcoder.blogspot.com/2020/07/use-flows-from-list-views-salesforce.html
+4. De-Duplicate Variables in Flows : Remove Common values from Collections
+https://accidentalcoder.blogspot.com/2020/07/flow-remove-duplicates-from-collection-variables.html
+5. Use Loops in Flows to Remove Duplicates from Collection Variables 
+https://accidentalcoder.blogspot.com/2020/07/remove-duplicates-from-flow-collection-variables-using-loops.html
+6. Use Hierarchy Custom Settings in a Lightning Flow: Avoid Hardcoding in Flows
+https://accidentalcoder.blogspot.com/2020/07/use-hierarchy-custom-setting-in-flows-salesforce.html
+7. Run/Fire Flows from URL : Use URL to pass and set Flow Input Variables
+https://www.accidentalcodersf.com/2020/07/url-run-flow-set-input-variable-value.html
+8. Bulkify Flows in Salesforce : Mass Insert Records using Flow
+https://www.accidentalcodersf.com/2020/07/flow-bulkify-flows-to-insert-multiple-records-salesforce.html
+9. Show Animations on Flow Screens : Use GIFs in Flow for Animations
+https://www.accidentalcodersf.com/2020/08/show-animations-using-gifs-in-flow-salesforce.html
+10. Kill Switch for Flows : On/off Switch for Salesforce Flows
+https://www.accidentalcodersf.com/2020/08/kill-switch-on-off-salesforce-flow.html
+11.  Keep Data on Salesforce Screen Flow and Record Page in Sync : Refresh Flow Data
+Use a Flow in a Visualforce Page and keep Flow Data and Record Data in Sync.
+https://www.accidentalcodersf.com/2020/09/keep-screen-flow-in-sync-with-record-page.html
+12. Create Invisible Screen Flow which Fire on Page Load to Perform Some Actions
+https://www.accidentalcodersf.com/2020/10/use-flows-to-track-unread-emails-on-cases.html
+13. Display Clickable Images in Screen Flows to navigate to Links
+https://www.accidentalcodersf.com/2020/12/display-clickable-image-screen-flow.html
+14. Loop on Multi Select Picklist Values in Screen Flows
+https://www.accidentalcodersf.com/2021/01/parse-multi-select-picklist-values-flow.html
+15. Loop on Checkbox Group Values in Screen Flows
+https://www.accidentalcodersf.com/2021/01/loop-on-checkbox-group-values-in-flow.html
+16. Use Not Contains, Not Starts With and Not Ends With Operators in Flow
+https://www.accidentalcodersf.com/2021/06/use-not-contains-not-starts-with-not-ends-with-.html
+EXAMPLES OF SCHEDULED FLOWS : SCHEDULE FLOWS IN SALESFORCE 
+1. Schedule Flows in Salesforce : Send Emails using Flows
+https://accidentalcoder.blogspot.com/2020/06/schedule-flows-salesforce.html
+EXAMPLES OF RECORD -TRIGGERED FLOWS IN SALESFORCE 
+1. Before Save Flows : Before Save Update Flows in Salesforce 
+Use Flows to perform Data Validations in Salesforce using before save Record-Triggered Flows.
+https://accidentalcoder.blogspot.com/2020/06/before-save-update-flows.html
+2. After Save Flows : After Save Update Flows in Salesforce
+Use After Save Update Flows in Salesforce to perform automations on Child objects after record is saved.
+https://accidentalcoder.blogspot.com/2020/06/after-save-update-flows.html
+3. Before Delete Flows
+These Flows fire whenever a record is deleted. Also, this runs in before context which means the Flow actually fires before the delete has taken place.
+
+https://www.accidentalcodersf.com/2020/08/before-delete-flow-salesforce.html
+4. After Update Flow on Email Message Object 
+Use Flows to Track or Check Unread Emails on Cases in Salesforce.
+https://www.accidentalcodersf.com/2020/10/use-flows-to-track-unread-emails-on-cases.html
+5. Test and Debug Record Triggered Flows - Get Detailed Logs for Record Triggered Flows
+https://www.accidentalcodersf.com/2020/11/test-and-debug-record-triggered-flows.html
+6. Send Custom Notifications from Flows 
+https://www.accidentalcodersf.com/2020/11/send-custom-notifications-from-flow.html
+7. Share/Clone Files Using After Update Flows: Learn Flow Loop and Assignment Element Basics
+https://www.accidentalcodersf.com/2020/12/salesforce-flow-loop-basics-clone-share-file.html
+8. Use Prior Value in Record Triggered Flow - Spring'21 Release Salesforce Flows
+Compare Old and New Value of the Records in a Flow. Get Record's old values in a Flow
+https://www.accidentalcodersf.com/2020/12/prior-value-in-record-triggered-flow.html
+
+Check out all Salesforce Flow Examples and Learn Flows: https://www.accidentalcodersf.com/search/label/Salesforce%20Flow
+
+=====================================================================================================
+
+Learn Flow with Scenarios - Salesforce Geekhttps://salesforcegeek.in › salesforce-flow-builder-scena...

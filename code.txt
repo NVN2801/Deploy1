@@ -1,0 +1,41 @@
+  trigger LeadConversion on Lead (after insert, after update)
+    { 
+   List<Database.LeadConvert> leadConverts = new List<Database.LeadConvert>(); 
+   for (Lead lead : Trigger.new) 
+    {
+   if (lead.IsConverted)
+    {
+   Database.LeadConvert lc = new Database.LeadConvert(); 
+   lc.setLeadId(lead.Id); 
+  leadConverts.add(lc);
+    } 
+   } 
+    if (!leadConverts.isEmpty()) 
+   {
+   List<Database.LeadConvertResult> leadConvertResults = Database.convertLead(leadConverts); 
+    for (Database.LeadConvertResult lcr : leadConvertResults)
+    {
+   // Copy Chatter Notes from Lead to Contact or Account 
+   List<FeedItem> feedItems = [SELECT Id, Body FROM FeedItem WHERE ParentId =:lcr.getLeadId()]; 
+   for (FeedItem feedItem : feedItems)
+   {
+   if (lcr.isSuccess() && lcr.getAccountId() != null)
+    {
+    // Copy Chatter Notes to Account 
+    FeedItem accountFeed = new FeedItem(); 
+    accountFeed.ParentId = lcr.getAccountId(); 
+    accountFeed.Body = feedItem.Body; 
+    insert accountFeed; 
+   }
+    else if (lcr.isSuccess() && lcr.getContactId() != null)
+    {
+      // Copy Chatter Notes to Contact 
+     FeedItem contactFeed = new FeedItem(); 
+    contactFeed.ParentId = lcr.getContactId(); 
+    contactFeed.Body = feedItem.Body; 
+    insert contactFeed; 
+     }
+    }
+   }
+  }
+ }
