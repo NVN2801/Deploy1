@@ -1,3 +1,9 @@
+Dear Sir,I recently came across a job on your portal, which I am interested in applying for. 
+The position of Salesforce Developer  at BlueFlames company and its requirements completely 
+matches my skills and qualifications.Please take a minute to go through the attached cover letter and 
+CV for your consideration
+
+
 <template>
 	<div class="salesback" style={backgroundStyle}>
 
