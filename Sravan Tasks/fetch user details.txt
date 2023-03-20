@@ -1,0 +1,99 @@
+import { LightningElement,track,wire } from 'lwc';
+import getusers from '@salesforce/apex/userController.getusers';
+const cols = [
+    { label: 'Username', fieldName: 'UserUsername' ,
+    type: 'url',
+    typeAttributes: {label: { fieldName: 'Username' }, 
+    },
+    },
+
+];
+export default class Userdetails extends LightningElement
+ {
+   columns=cols;
+   @track userList;
+  // Method 2
+   @wire(getusers) 
+   wiredAccounts({data,error}){
+        if (data) {
+            let allRecord=[];
+            data.forEach(element => {
+                
+                let val=Object.assign({},element);
+                console.log(JSON.stringify(val))
+                val.UserUsername='/'+val.Id;
+                //val.Id='/'+val.Id;
+                allRecord.push(val);
+            });
+             this.userList = allRecord;
+        console.log(data); 
+        } else if (error) {
+        console.log(error);
+        }
+   }
+
+// @wire (getusers) 
+//   wiredAccounts({data,error}){
+//     if (data) {
+//     console.log(data); 
+//     } else if (error) {
+//     console.log(error);
+//     }
+// }
+}
+
+
+<template>
+    <!-- <template for:each={wiredAccounts.data} for:item="usr">
+         <p key={usr.id}>
+              {usr.Username}
+         </p>
+    </template> -->
+    <div style="height: 500px;">
+        <template if:true={userList}>
+             <lightning-datatable
+                     key-field="id"
+                     data={userList}
+                     columns={columns}>
+             </lightning-datatable>
+        </template>
+        </div>
+</template>
+
+
+public class userController {
+ //@AuraEnabled is annotation enables LWC to access below apex method
+ //(cacheable=true) is for caching the data on client side storage without 
+  // waiting for server trips. Which improves the performance
+ @AuraEnabled(cacheable=true)
+  public static List<User> getusers() {
+  return [SELECT id,Username FROM User];
+  }
+
+}
+
+
+
+“1. 𝗕𝗿𝗼𝗮𝗱𝗲𝗻 𝗬𝗼𝘂𝗿 𝗦𝗸𝗶𝗹𝗹 𝗦𝗲𝘁:
+As a result of changing jobs regularly, you can gain new skills, gain new experience, 
+and become a more well-rounded professional.
+
+2. 𝗡𝗲𝗴𝗼𝘁𝗶𝗮𝘁𝗶𝗻𝗴 𝗢𝗽𝗽𝗼𝗿𝘁𝘂𝗻𝗶𝘁𝘆:
+Negotiating your salary or other compensation can be easier if you frequently change jobs and companies.
+You will have a better chance of understanding the market value of your skills when you take on new roles.
+
+3. 𝗘𝘅𝗽𝗼𝘀𝘂𝗿𝗲 𝘁𝗼 𝗻𝗲𝘄 𝗶𝗻𝗱𝘂𝘀𝘁𝗿𝗶𝗲𝘀 𝗮𝗻𝗱 𝗿𝗼𝗹𝗲𝘀:
+If you change jobs every few years, you can explore different industries and roles that may be more suitable for you.
+A job change can help you gain insight into new roles, acquire new skills and certifications, and enhance your resume.
+
+4. 𝗜𝗺𝗽𝗿𝗼𝘃𝗲𝗱 𝗹𝗼𝗻𝗴-𝘁𝗲𝗿𝗺 𝗷𝗼𝗯 𝘀𝗮𝘁𝗶𝘀𝗳𝗮𝗰𝘁𝗶𝗼𝗻:
+By changing roles, you’ll have the ability to continually challenge yourself, continue to make an impact, 
+and have better long-term job satisfaction.
+
+5. 𝗘𝘅𝗽𝗮𝗻𝗱 𝗬𝗼𝘂𝗿 𝗡𝗲𝘁𝘄𝗼𝗿𝗸:
+Every job is a chance to expand your network – with potential mentors, collaborators, and employers.
+Having that wide reach can be incredibly useful on the job market, potentially giving you an advantage 
+over other jobseekers.
+
+Changing jobs frequently can be scary, but if you can manage it strategically, you’ll stay up to date, 
+gain new skills and build a wide network that can open many more doors and opportunities for your future.”

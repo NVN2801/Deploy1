@@ -1,0 +1,71 @@
+
+import { LightningElement,wire } from 'lwc';
+import usersNames from '@salesforce/apex/user_accounts.usersNames';
+import accList from '@salesforce/apex/user_accounts.accList';
+const colmm=[{label:'Name',fieldName:'Name',type:'text'},
+            {label:'Rating',fieldName:'Rating',type:'text'}];
+export default class User_accounts extends LightningElement {
+    usersdata=[];
+    coll=colmm;
+  @wire (usersNames)userNamess(data,error){
+    if(data){
+            this.usersdata=data.data;
+      
+    }else{
+        alert('failed');
+    }
+  }
+  accountsdata;
+  id;
+  handleClick(event){
+    this.name=event.target.title;
+     accList({'ids':this.name}).then(res=>{
+        this.accountsdata=res;
+     }).catch(error=>{
+        alert('fail:'+error);
+     })
+  }
+}
+
+
+public with sharing class user_accounts {
+   @AuraEnabled(cacheable=true)
+   public static List<User> usersNames(){
+    List<User> u=[select Id,Name,Username from User];
+    return u;
+   }
+   @AuraEnabled(cacheable=true)
+   public static List<Account> accList(Id ids){
+    return [select Id,Name,Rating,OwnerId from Account WHERE OwnerId=:ids];
+   }
+}
+
+
+<template>
+    <lightning-card>  
+    <div class="slds-p-around_x-large" style="border:1px solid black">
+        <span style="font-size:20px ;">User List</span>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>UserName</th>
+                    <th>Id</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={usersdata} for:item="u">
+                    <tr key={u.id}>
+                    <td><span onclick={handleClick} key={u.Id}><a title={u.Id}>{u.Name}</a></span></td>
+                    <td>{u.Username}</td>
+                    <td>{u.Id}</td>
+                    </tr>
+                </template> 
+            </tbody>
+        </table> 
+    </div >        
+ <span style="font-size:20px ;">Account List</span>
+        <lightning-datatable key-field="Id" data={accountsdata} columns={coll} ></lightning-datatable>
+    </lightning-card>
+</template>
+
