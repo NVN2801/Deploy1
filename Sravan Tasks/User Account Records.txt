@@ -69,3 +69,199 @@ public with sharing class user_accounts {
     </lightning-card>
 </template>
 
+
+
+
+integration with Audio Player using LWC
+Apex class
+public class getamtMusicPlayer {
+     @AuraEnabled(cacheable=true)
+     public static List<Items_AMT_Player__x> musiclist(){
+        List<Items_AMT_Player__x> au=[SELECT Id, ExternalId,UpdateDate__c,DisplayUrl,MimeType__c,ContentLength__c,Name__c FROM Items_AMT_Player__x WHERE MimeType__c = 'audio/mpeg'] ; 
+         return au;
+    }
+    @AuraEnabled(cacheable=true)
+     public static List<Items_AMT_Player__x> getsongs(String Ids){
+        List<Items_AMT_Player__x> au=[SELECT Id, ExternalId,DownloadUrl__c,MimeType__c,ContentLength__c,Name__c FROM Items_AMT_Player__x WHERE ExternalId=:Ids LIMIT 1] ; 
+         
+         return au;
+    }
+
+}
+
+
+
+Parent component
+template:
+<template>
+    <div class="slds-scrollable-y mainbackground">
+        <div class="header">
+            <h1>AMT Player</h1>
+            <p>THE VIBE</p>
+
+        </div>
+        <template if:true={datatable}>
+            <div class="datatable">
+                <div class="tableheader">
+                    <h2>Songs</h2>
+                    <h2>Size</h2>
+                </div>
+                
+                <div class="table">
+                    <template for:each={songslist} for:item="song">
+                        <div key={song.id} class="aligntable" data-id={song.externalId} onclick={selectedsong}>
+                            
+                            <div class="songname"><h1>{song.name}</h1></div>
+                            <div class="songMb"><h3>{song.Size} MB</h3></div>
+                        </div> 
+                         
+                       
+                    </template>
+                </div>
+                
+            </div>
+            <div class="footer">
+                &copy;Ramjith 
+            </div>
+
+        </template>
+        <template if:true={player}>
+            <c-amt-Audio-Player songid={selectsong} onbackbutton={clickback}></c-amt-Audio-Player>
+
+        </template>
+       
+
+    </div>
+
+</template>
+
+
+js:
+import { LightningElement, wire,track} from 'lwc';
+import musiclist from '@salesforce/apex/getamtMusicPlayer.musiclist';
+export default class AmtMusicPlayer extends LightningElement {
+    @track songslist = [];
+    @track datatable = true;
+    @track player = false;
+    @track listdata;
+    @track selectsong='';
+
+    @wire(musiclist)
+    wiredlist({data,error}){
+        if(data){
+
+            this.listdata = data;
+
+            console.log('data input :'+JSON.stringify(data));
+            this.songslist = data.map(song => ({
+                id: song.Id,
+                externalId : song.ExternalId,
+                name: song.Name__c,
+                Size: Math.floor(song.ContentLength__c / 1048576)
+            }));
+
+        } else if(error){
+            console.log('Something went wrong:', error);
+
+        }
+    }
+
+    selectedsong(event){
+        if(event.currentTarget.dataset.id === 'undefined'){
+            this.selectsong='';
+        }else{
+            this.selectsong = event.currentTarget.dataset.id;
+        }
+        
+
+
+        console.log('song Id : '+this.selectsong);
+        this.datatable = false;
+        this.player = true;
+    }
+
+    clickback(){
+        this.datatable = true;
+        this.player = false;
+
+    }
+   
+}
+
+css
+.header{
+    width: 100%;
+    height: 60px;
+    background-color: #404040a8;
+    border-radius: 10px 10px 0px 0px;
+    text-align: center;
+    padding: 20px;
+}
+.header h1{
+    font-family: roboto;
+
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+}
+.header p{
+    font-family: 'Dancing Script', cursive;
+
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 6px;
+    letter-spacing: 4px;
+}
+.mainbackground{
+    width: 349px;
+    height: 390px;
+    background-color:#4a4a4a;
+    border-radius: 10px;
+
+
+}
+.tableheader{
+    width: 100%;
+    height: 25px;
+    display: flex;
+    justify-content: space-around;
+    /* background-color: aliceblue; */
+    align-items: center;
+    font-weight: 700;
+    color: white;
+}
+.aligntable{
+    width: 100%;
+    height: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    color: white;
+
+}
+.songname{
+    width: 50%;
+    padding-left: 25px;
+}
+.songname h1{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.songMb{
+    padding-right: 25px;
+}
+.aligntable:hover{
+background-color: rgb(200, 255, 250);
+color: black;
+}
+.table{
+    width: 100%;
+    height: 272px;
+    overflow: scroll;
+}
+.table::-webkit-scrollbar {
+    display: none;
+  }
+  
+
