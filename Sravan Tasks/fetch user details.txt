@@ -97,3 +97,171 @@ over other jobseekers.
 
 Changing jobs frequently can be scary, but if you can manage it strategically, you’ll stay up to date, 
 gain new skills and build a wide network that can open many more doors and opportunities for your future.”
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+https://lnkd.in/dqZ3ff7g
+
+public without sharing class BeerListController {
+@AuraEnabled(cacheable=true)
+public static list<Beer__c> getBeerList(Integer limitSize, Integer offset){
+    try {
+        return [Select id,Alcohol__c, brewery_id__c,Image__c , Price__c, Id__c,Name from Beer__c LIMIT :limitSize
+        OFFSET :offset];
+    } catch (Exception e) {
+        throw new AuraHandledException(e.getMessage());
+    }
+}
+@AuraEnabled(cacheable=true)
+public static list<Beer__c> getBeerListFiltrerd(String name){
+    try {
+        return [Select id,Alcohol__c, brewery_id__c,Image__c , Price__c, Id__c,Name from Beer__c where Name like :'%'+name+'%' Limit 10];
+    } catch (Exception e) {
+        throw new AuraHandledException(e.getMessage());
+    }
+}
+}
+============================
+<template>
+
+   <template if:true={beerList}>
+    <div class="beersDiv"  style="overflow:scroll; height:400px;" onscroll={handleScroll1}>
+    <lightning-layout multiple-rows>
+    <template for:each={beerList} for:item="item">
+        <lightning-layout-item size="4" key={item.Id}>
+        <c-beer-tile2 beer-record={item}></c-beer-tile2>
+        </lightning-layout-item>
+    </template>
+    </lightning-layout>
+</div>
+   </template>
+
+   <template if:true={isLoading}>
+    <div>
+        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+    </div>
+   </template>
+</template>
+
+
+JS
+import { LightningElement, track } from 'lwc';
+import getBeerList from '@salesforce/apex/BeerListController.getBeerList';
+export default class BeerList2 extends LightningElement {
+    
+    lastScrollTop=0
+    rowLimit =10;
+    rowOffSet=0;
+    error;
+    @track beerList = [];
+
+    isLoading = false;
+    connectedCallback() {
+        this.loadData();
+    }
+
+    loadData(){
+        return  getBeerList({ limitSize: this.rowLimit , offset : this.rowOffSet })
+        .then(result => {
+            let updatedList = [...this.beerList, ...result];
+            this.beerList = updatedList;
+            this.error = undefined;
+        })
+        .catch(error => {
+            this.error = error;
+            this.beerList = undefined;
+        });
+    }
+    
+    handleScroll1(){
+        let element=this.template.querySelector('.beersDiv');
+        console.log('Handling1 Scroll'+element.scrollTop+' --- '+element.scrollHeight);
+        if (element.scrollTop < this.lastScrollTop){
+            // it's an Up Scroll 
+            return;
+         } 
+
+         this.lastScrollTop = element.scrollTop <= 0 ? 0 : element.scrollTop;
+
+          if (element.scrollTop + element.offsetHeight>= element.scrollHeight ){
+            // Reached the End of The Div Query Next Set of Data
+            this.isLoading = true;
+            this.rowOffSet = this.rowOffSet + this.rowLimit;
+            console.log("End");
+            this.loadData()
+            .then(()=> {
+                console.log('Updated data');
+                this.isLoading = false;
+            });   
+          }
+    }  
+}
+=============================================
+<template>
+       
+    <lightning-card title={beerRecord.Name}>
+        <p class="slds-p-horizontal_small">
+            <img src={beerRecord.Image__c} width="100" height="35" >
+        </p>
+        <lightning-layout multiple-rows>
+            <lightning-layout-item size="12">
+                <div class="custom-box"><b>Beer ID:</b> {beerRecord.Id__c}</div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12"  >
+                <div class="custom-box"><b>Alchohal %:</b> {beerRecord.Alcohol__c}</div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12"  >
+                <div class="custom-box"><b>Price:</b> {beerRecord.Price__c}</div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12"  >
+                <div class="custom-box"><b>Brewery id:</b> {beerRecord.brewery_id__c}</div>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <div slot="footer">
+            <lightning-button variant="success" label="Add to Cart" title="Add to Cart" onclick={FunctionName}></lightning-button>
+            
+        </div>
+    </lightning-card>
+</template>
+
+JS
+import { api, LightningElement } from 'lwc';
+
+export default class BeerTile2 extends LightningElement {
+
+    @api
+    beerRecord
+}
+============================================================================================
+public class pro_task implements Database.Batchable<sObject>
+{
+    public Database.QueryLocator start(Database.BatchableContext bc)
+    {
+        String oppList='select id,closeDate,stageName from Opportunity';
+        return database.getQueryLocator(oppList);
+    }
+    public void execute(database.BatchableContext bc, List<Opportunity> opps)
+    {
+        List<Opportunity> updateOpps=new List<Opportunity>();
+        for(Opportunity o: opps)
+        {
+            if(o.closeDate==System.today())
+            {
+                o.stageName='Closed Lost';
+                updateOpps.add(o);
+            }
+        }
+        update updateOpps;
+    }
+    public void finish(database.BatchableContext bc)
+    {
+        AsyncApexJob a = [Select Id, Status,NumberOfErrors,JobItemsProcessed,TotalJobItems, CreatedBy.Email
+        				  from AsyncApexJob where Id =:bc.getJobId()];
+        
+         Messaging.SingleEmailMessage msg=new Messaging.SingleEmailMessage();
+         String[] toAddresses = new String[] {a.CreatedBy.Email};
+         msg.setToAddresses(toAddresses);
+		 msg.setSubject('Match Merge Batch ' + a.Status);
+         msg.setPlainTextBody('records processed ' + a.TotalJobItems +'with '+ a.NumberOfErrors + ' failures.');
+         Messaging.sendEmail(new Messaging.singleEmailMessage[]{msg});
+    }
+}
